@@ -26,7 +26,7 @@ fs::dir_ls("data-raw/sindec_fornecedor") |>
 
 
 piggyback::pb_upload("data-raw/cpopg.zip", tag = "tjsp")
-piggyback::pb_upload("data-raw/cjpg/2019.zip", tag = "tjsp")
-piggyback::pb_upload("data-raw/cjpg/2020.zip", tag = "tjsp")
-piggyback::pb_upload("data-raw/cjpg/2021.zip", tag = "tjsp")
-piggyback::pb_upload("data-raw/cjpg/2022.zip", tag = "tjsp")
+piggyback::pb_upload("data-raw/tjsp/cjpg/2019.zip", tag = "tjsp")
+piggyback::pb_upload("data-raw/tjsp/cjpg/2020.zip", tag = "tjsp")
+piggyback::pb_upload("data-raw/tjsp/cjpg/2021.zip", tag = "tjsp")
+piggyback::pb_upload("data-raw/tjsp/cjpg/2022.zip", tag = "tjsp")
