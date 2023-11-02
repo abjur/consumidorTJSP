@@ -1,0 +1,16 @@
+.Rproj.user
+data-raw/consumidor_gov
+data-raw/consumidor_gov_zip
+data-raw/sindec_fornecedor
+data-raw/sindec_atendimentos
+data-raw/relatorio_cache
+data-raw/relatorio_files
+data-raw/tjsp
+data-raw/aux_cgov_sp.rds
+data-raw/aux_cgov.rds
+data-raw/aux_sindec_sp.rds
+.Rhistory
+.Rdata
+.httr-oauth
+.DS_Store
+.quarto

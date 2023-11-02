@@ -1,0 +1,698 @@
+---
+title: "TCC Igor"
+format:
+  html: default
+  docx:
+    reference-doc: "/home/jt/Documents/abj/obsArb/inst/relatorio/template.docx"
+engine: knitr
+knitr:
+  opts_chunk:
+    echo: false
+    warning: false
+    message: false
+    dpi: 300
+---
+
+## Introdução
+
+*é com você!*
+
+### Referencial teórico
+
+*sugestão: utilizar uma parte da proposta de projeto do obs consumidor*
+
+### Objetivos
+
+O objetivo principal da pesquisa é descrever quantitativamente os conflitos relacionados ao Direito do Consumidor no estado de São Paulo. Especificamente, desejamos:
+
+- Comparar características de interesse nas reclamações extrajudiciais e processos judiciais, como volume, localização, tempo e taxa de resolução;
+- Elaborar um diagnóstico quantitativo da situação do direito do consumidor no estado de São Paulo.
+- Mostrar o potencial da jurimetria para identificar gargalos no sistema judiciário para propor políticas públicas.
+
+### Questões norteadoras da pesquisa
+
+Considerando o referencial teórico
+
+1. Como se distribuem regionalmente as reclamações e processos no estado de São Paulo?
+2. Quais são os principais assuntos discutidos nas reclamações e processos?
+3. Houve algum impacto da pandemia na quantidade de reclamações e processos?
+4. Quais são os maiores litigantes e tipos empresariais mais comuns nas reclamações e processos?
+5. Qual é a taxa de resolução de conflitos nas reclamações e processos?
+6. Qual é o tempo típico de duração das reclamações e processos?
+
+## Metodologia
+
+A pesquisa tem como objetivo principal analisar as diferentes formas que os conflitos consumeristas aparecem no mundo real. Para a parte empírica da pesquisa, no entanto, temos de fazer um recorte daquilo que não apenas é real, como também está disponível publicamente.
+
+Nem todos os conflitos são registrados em bases públicas. Em algumas situações, os conflitos são registrados nos Serviços de Atendimento ao Cliente (SACs). Em outras situações, os conflitos são registrados em plataformas privadas, como o Reclame Aqui. Por esse motivo, vamos analisamos apenas os registros de conflitos que ficam registradas em plataformas dos poderes Judicário ou Executivo.
+
+O fato de uma informação ser pública não significa que ela é diretamente acessível. Isso está relacionado com o conceito de transparância: as entidades que organizam os dados de interesse nem sempre disponibilizam os dados de forma **ativa**, apenas de forma **passiva**. Quando uma entidade pública segue os princípios de transparência ativa, ela disponibiliza os dados em formato aberto. Do contrário, quando a entidade não disponibiliza os dados em formato aberto, ela ainda assim deve seguir os princípios de transparência ativa, conforme a Lei de Acesso à Informação (Lei 12.527/2011, LAI).
+
+A LAI permite que qualquer cidadão possa solicitar uma informação pública a qualquer entidade que faz parte do governo. A entidade tem o prazo de 20 dias para responder a solicitação. A resposta pode ser positiva ou negativa. Se a resposta for positiva, a entidade deve disponibilizar os dados em formato aberto. Se a resposta for negativa, a entidade deve justificar o motivo da negativa. Se a entidade não responder a solicitação, ela está sujeita a sanções administrativas e judiciais.
+
+Como é possível notar, o uso da LAI pode ser bastante burocrático. É possível que o acesso aos dados demore meses, a depender da comunicação com o órgão. Em alguns casos, mesmo depois de muito tempo de espera, os dados acabam não sendo disponibilizados, por incapacidade técnica do órgão que detém acesso aos dados.
+
+Por esse motivo, optamos, nesta pesquisa, por não utilizar a LAI. Vamos considerar apenas dados disponíveis publicamente em formato aberto ou dados públicos que podem ser acessados por mecanismos automatizados, como ferramentas de raspagem de dados (*web scraping*).
+
+Feita essa ressalva, passamos a descrever as bases de dados utilizadas na pesquisa. Consideramos quatro bases de dados no total:
+
+- Dados do Consumidor.gov.br, vinculado ao Ministério da Justiça (MJ),
+- Dados do Sistema Nacional de Informações de Defesa do Consumidor (SINDEC), também vinculado ao MJ.
+- Dados da consulta de sentenças do Tribunal de Justiça de São Paulo (TJSP)
+- Dados da consulta de processos do TJSP, feita por amostragem.
+
+A base do [consumidor.gov.br](https://www.consumidor.gov.br/pages/dadosabertos/externo/) pode ser acessada de forma aberta, diretamente pelo portal. Chamamos essa base de dados de **CGOV**. Os dados são disponibilizados mês a mês. Consideramos todos os meses entre jan/2019 e dez/2023. No total, são 1.203.114 reclamações em São Paulo, com as seguintes informações:
+
+1. **file**: Caminho ou nome do arquivo de onde os dados foram extraídos.
+2. **regiao**: Região geográfica do Brasil à qual a reclamação está associada.
+3. **uf**: Sigla do estado brasileiro relacionado à reclamação.
+4. **cidade**: Nome da cidade onde o consumidor que fez a reclamação está localizado.
+5. **sexo**: Gênero do consumidor, podendo ser "F" para feminino ou "M" para masculino.
+6. **faixa_etaria**: Faixa etária do consumidor, categorizada em intervalos de idade.
+7. **data_finalizacao**: Data em que a reclamação foi finalizada.
+8. **tempo_resposta**: Tempo que a empresa levou para responder à reclamação, expresso em dias.
+9. **nome_fantasia**: Nome fantasia da empresa contra a qual a reclamação foi feita.
+10. **segmento_de_mercado**: Categoria que indica o segmento de mercado ao qual a empresa pertence.
+11. **area**: Área de atuação da empresa dentro do contexto da reclamação.
+12. **assunto**: Tema central ou assunto principal da reclamação.
+13. **grupo_problema**: Categoria que agrupa o tipo de problema relatado na reclamação.
+14. **problema**: Descrição detalhada do problema relatado pelo consumidor.
+15. **como_comprou_contratou**: Meio pelo qual o consumidor adquiriu o produto ou serviço, podendo ser por telefone, internet, entre outros.
+16. **procurou_empresa**: Indica se o consumidor tentou resolver o problema diretamente com a empresa antes de registrar a reclamação, sendo "S" para sim e "N" para não.
+17. **respondida**: Informa se a reclamação recebeu uma resposta da empresa, sendo "S" para sim e "N" para não.
+18. **situacao**: Situação final da reclamação, indicando se foi resolvida ou não, e como foi avaliada pelo consumidor.
+19. **avaliacao_reclamacao**: Avaliação do consumidor em relação ao atendimento recebido e à solução do problema.
+20. **nota_do_consumidor**: Nota atribuída pelo consumidor à empresa, geralmente em uma escala de 1 a 5.
+21. **total**: Valor numérico associado à reclamação, cujo significado específico não está claro sem informações adicionais.
+
+A base do [SINDEC](https://dados.gov.br/dados/conjuntos-dados/atendimentos-de-consumidores-nos-procons-sindec1) contém o registro de todos os atendimentos de consumidores nos Procons. Considerando somente o estado de São Paulo, são 2.347.020 atendimentos, com as seguintes informações:
+
+1. **file**: Caminho ou nome do arquivo de onde os dados foram extraídos.
+2. **ano_atendimento**: Ano em que o atendimento ao consumidor foi registrado.
+3. **trimestre_atendimento**: Trimestre do ano em que o atendimento foi realizado.
+4. **mes_atendimento**: Mês do ano em que o atendimento ao consumidor foi registrado.
+5. **data_atendimento**: Data e hora exatas em que o atendimento foi realizado.
+6. **codigo_regiao**: Código numérico que representa a região geográfica do Brasil associada ao atendimento.
+7. **regiao**: Nome da região geográfica do Brasil à qual o atendimento está associado.
+8. **uf**: Sigla do estado brasileiro relacionado ao atendimento.
+9. **codigo_tipo_atendimento**: Código numérico que representa o tipo de atendimento realizado.
+10. **descricao_tipo_atendimento**: Descrição textual do tipo de atendimento prestado ao consumidor.
+11. **codigo_assunto**: Código numérico que representa o assunto principal da demanda.
+12. **descricao_assunto**: Descrição textual do assunto principal da demanda.
+13. **grupo_assunto**: Categoria mais ampla à qual o assunto pertence.
+14. **codigo_problema**: Código numérico que identifica o problema específico relatado pelo consumidor.
+15. **descricao_problema**: Descrição detalhada do problema relatado.
+16. **grupo_problema**: Categoria mais ampla à qual o problema relatado pertence.
+17. **sexo_consumidor**: Gênero do consumidor, podendo ser "F" para feminino ou "M" para masculino.
+18. **faixa_etaria_consumidor**: Faixa etária do consumidor, categorizada em intervalos de idade.
+19. **cep_consumidor**: Código de Endereçamento Postal (CEP) associado ao consumidor, podendo estar vazio ou ser "NULL".
+20. **tipo_fornecedor**: Código numérico que representa o tipo de fornecedor contra o qual a demanda foi registrada.
+21. **razao_social_sindec**: Razão social do fornecedor conforme registrado no Sindec.
+22. **nome_fantasia_sindec**: Nome fantasia do fornecedor conforme registrado no Sindec.
+23. **cnpj**: Número do Cadastro Nacional de Pessoa Jurídica do fornecedor.
+24. **radical_cnpj**: Primeiros oito dígitos do CNPJ, identificando a matriz da empresa.
+25. **razao_social_rfb**: Razão social do fornecedor conforme registrado na Receita Federal do Brasil.
+26. **nome_fantasia_rfb**: Nome fantasia do fornecedor conforme registrado na Receita Federal do Brasil.
+27. **codigo_cnae_principal**: Código da Classificação Nacional de Atividades Econômicas principal da empresa.
+28. **descricao_cnae_principal**: Descrição da atividade econômica principal da empresa conforme a CNAE.
+
+A terceira e última fonte de dados são as informações do Judiciário. Infelizmente, os dados do judiciário não são abertos, sendo necessário utilizar técnicas de raspagem de dados para obter as informações desejadas. Como essas técnicas têm um custo computacional alto, tanto para desenvolvimento quanto para aplicação, decidimos restringir o escopo territorial da pesquisa para considerar somente o estado de São Paulo. Além disso, na consulta processual, consideramos apenas uma amostra de 1000 processos que serão analisados em maior detalhe.
+
+A base do TJSP é obtida em dois passos. No primeiro passo, acessamos o [site do banco de sentenças do TJSP](https://esaj.tjsp.jus.br/cjpg/), que contém informações de sentenças proferidas pelo TJSP. O site permite a consulta de sentenças por classe, por comarca, por data de disponibilização e por data de distribuição. No nosso caso, fizemos um levantamento considerando todos os assuntos da árvore de direito do consumidor, de acordo com a Figura @fig-assuntos.
+
+```{r}
+#| label: fig-assuntos
+#| fig-cap: Assuntos selecionados para pesquisa de processos no TJSP.
+knitr::include_graphics("img/assuntos_tjsp.png")
+```
+
+Além disso, consideramos apenas as classes processuais "Procedimento Comum Cível" e "Procedimento do Juizado Especial Cível". A consulta retorna uma tabela com 1.053.853 decisões e 13 informações, descritas a seguir:
+
+1. **file**: Caminho ou nome do arquivo de onde os dados foram extraídos.
+2. **processo**: Número único de identificação do processo no Tribunal de Justiça.
+3. **pagina**: Número da página do documento dentro do processo.
+4. **duplicado**: Indicador lógico (verdadeiro/falso) identificando se o processo aparece mais de uma vez na base de dados (casos com mais de uma decisão).
+5. **classe**: Categoria ou tipo de processo, por exemplo, "Procedimento Comum Cível".
+6. **assunto**: Tema ou assunto principal do processo.
+7. **magistrado**: Nome do magistrado ou juiz responsável pelo processo.
+8. **comarca**: Jurisdição ou área geográfica na qual o processo está registrado.
+9. **foro**: Nome do foro onde o processo está tramitando.
+10. **vara**: Nome da vara judicial na qual o processo está alocado.
+11. **disponibilizacao**: Data em que o documento foi disponibilizado pelo Tribunal.
+12. **cd_doc**: Código único de identificação do documento dentro do processo.
+
+Em seguida, consultamos uma amostra de 10.000 casos, selecionados aleatoriamente a partir dos processos listados acima. A amostra foi realizada por conta do volume da base de dados, que é muito grande. Dos 10.000 casos consultados, 16 não retornaram nenhum resultado na consulta de processos. o resultado, então, foi uma base com 9.951 processos e 20 colunas:
+
+1. **file**: Caminho ou nome do arquivo HTML de onde os dados foram extraídos.
+2. **processo**: Número único de identificação do processo no Tribunal de Justiça.
+3. **codigo_processo**: Código único de identificação do processo, utilizado internamente pelo sistema do tribunal.
+4. **digital**: Indicador lógico (verdadeiro/falso) que mostra se o processo é digital ou físico.
+5. **situacao**: Situação atual do processo, como "Extinto", "Em andamento" ou "Em grau de recurso".
+6. **area**: Área do direito a qual o processo está relacionado, como "Cível", "Criminal", etc.
+7. **assunto**: Tema ou assunto principal do processo.
+8. **classe**: Categoria ou tipo de processo, como "Procedimento Comum Cível".
+9. **controle**: Número de controle interno do processo.
+10. **distribuicao**: Data, hora e critério de distribuição do processo.
+11. **foro**: Nome do foro onde o processo está tramitando.
+12. **juiz**: Nome do juiz responsável pelo processo.
+13. **local_fisico**: Informação sobre a localização física do processo, incluindo data e local.
+14. **outros_numeros**: Outros números de identificação associados ao processo.
+15. **valor_da_acao**: Valor monetário envolvido na ação.
+16. **vara**: Nome da vara judicial na qual o processo está alocado.
+17. **outros_assuntos**: Outros temas ou assuntos relacionados ao processo.
+18. **apensado_ao**: Informação sobre se o processo está apensado a outro.
+19. **partes**: Lista contendo informações sobre as partes envolvidas no processo.
+20. **movs**: Lista contendo informações sobre as movimentações processuais.
+
+### Plano de análise
+
+As análises foram organizadas de forma a responder às questões norteadoras de pesquisa. As análises utilizam técnicas de estatística descritiva (BUSSAB & MORETTIN, 2019), como gráficos de barras, séries de tempo, mapas gráficos de médias.
+
+Infelizmente, nem todas as bases contêm informações suficientes para realizar as análises relacionadas a todas as questões norteadoras da pesquisa. O Quadro abaixo resume as bases de dados e análises realizadas para cada questão norteadora:
+
+Abaixo está uma tabela estruturada para guiar a pesquisa baseada nas perguntas fornecidas, utilizando as bases de dados do CGOV, SINDEC, TJSP-Sentenças e TJSP-Processos:
+
+| Questões Norteadoras da Pesquisa | Bases Utilizadas | Análises a Serem Realizadas |
+|----------------------------------|-----------------|-----------------------------|
+| 1. Distribuição regional das reclamações e processos em São Paulo | CGOV, TJSP-Sentenças | - Mapeamento geográfico das reclamações e processos. |
+| 2. Principais assuntos discutidos | CGOV, SINDEC, TJSP-Sentenças | - Análise de frequência dos assuntos para identificação dos temas mais recorrentes. |
+| 3. Impacto da pandemia na quantidade de reclamações e processos | CGOV, SINDEC, TJSP-Sentenças | - Análise de série temporal para identificar tendências e variações ao longo do tempo.<br/>- Comparação dos períodos pré e pós-início da pandemia. |
+| 4. Maiores litigantes e tipos empresariais mais comuns | CGOV, SINDEC, TJSP-Processos | - Identificação e ranking dos maiores litigantes.<br/>- Análise da frequência de diferentes tipos empresariais nas reclamações. |
+| 5. Taxa de resolução de conflitos | CGOV, TJSP-Processos | - Cálculo da taxa de resolução baseando-se na proporção de decisões favoráveis ao consumidor e taxa de resoluções das reclamações. |
+| 6. Tempo de duração das reclamações e processos | CGOV, TJSP-Processos | - Cálculo do tempo de duração desde o início até a conclusão/resolução.<br/>- Análise estatística para identificar a distribuição do tempo de duração. |
+
+Uma limitação da análise realizada é o cruzamento de variáveis para avaliar diferentes questões norteadoras. Por exemplo, pode ser de interesse realizar análises dos tempos dos processos e taxa de resolução comparando diferentes tipos empresariais. Essas análises, no entanto, não foram realizadas, para não aumentar demasiadamente o tamanho do levantamento, que já é complexo.
+
+Com o objetivo de permitir que novas análises sobre o tema sejam realizadas, todas as bases foram disponibilizadas publicamente. Elas estão disponíveis em um repositório do [GitHub](https://github.com/ipretel/consumidorTJSP), uma plataforma de produção e gerstão de software que permite o acesso online e gratuito.
+
+## Análise de dados
+
+```{r}
+#| label: dados
+da_cjpg <- readr::read_rds("tjsp/da_cjpg.rds")
+
+loc <- readr::locale(grouping_mark = ".", decimal_mark = ",")
+da_cpopg <- readr::read_rds("tjsp/da_cpopg.rds") |>
+  dplyr::filter(!is.na(area)) |>
+  dplyr::mutate(valor = readr::parse_number(valor_da_acao, locale = loc)) |>
+  dplyr::filter(!is.na(valor)) |>
+  dplyr::mutate(
+    dt_dist = purrr::map_chr(movs, \(x) as.character(min(x$data))),
+    dt_dist = as.Date(dt_dist)
+  ) |>
+  dplyr::inner_join(
+    da_cjpg |>
+      dplyr::arrange(disponibilizacao) |>
+      dplyr::select(processo, disponibilizacao) |>
+      dplyr::distinct(processo, .keep_all = TRUE),
+    "processo"
+  ) |>
+  dplyr::mutate(
+    tempo = as.numeric(disponibilizacao - dt_dist) / 30.4375
+  ) |>
+  dplyr::filter(classe %in% c(
+    "Procedimento Comum Cível", "Procedimento do Juizado Especial Cível"
+  ))
+
+da_sindec_sp <- readr::read_rds("aux_sindec_sp.rds")
+da_cgov_sp <- readr::read_rds("aux_cgov_sp.rds")
+
+pop_ibge_2022 <- readxl::read_excel(
+  "POP2022_Municipios_20230622.xls", sheet = 2
+) |>
+  janitor::clean_names() |>
+  dplyr::mutate(
+    code_muni = as.numeric(paste0(cod_uf, cod_munic)),
+    populacao = stringr::str_remove_all(populacao, "\\(.*"),
+    populacao = readr::parse_number(
+      populacao, locale = readr::locale(decimal_mark = ",", grouping_mark = ".")
+    )
+  )
+
+```
+
+### Como se distribuem regionalmente as reclamações e processos no estado de São Paulo?
+
+A @fig-regiao-cgov mostra a taxa de reclamações por cem mil habitantes em cada município de São Paulo. Consideramos apenas municípios com mais de 100 reclamações. É possível notar uma concentração maior da taxa de reclamações na região metropolitana. Também é possível identificar uma concentração atípica no norte do estado, na região de Palmeira D'Oeste.
+
+```{r}
+#| label: fig-regiao-cgov
+#| fig-cap: Taxa de reclamações por 100 mil habitantes em cada município.
+aux_cgov_mapa <- da_cgov_sp |>
+  dplyr::count(cidade, uf) |>
+  dplyr::filter(n > 100) |>
+  munifacil::limpar_colunas(cidade, uf) |>
+  dplyr::mutate(
+    muni_join = stringr::str_replace(muni_join, "^.gua", "agua"),
+    muni_join = stringr::str_replace(muni_join, "^s.o ", "sao "),
+    muni_join = stringr::str_replace(muni_join, " s.o ", " sao "),
+    muni_join = stringr::str_replace(muni_join, "am.rico", "americo"),
+    muni_join = stringr::str_replace(muni_join, "ant.nio", "antonio"),
+    muni_join = stringr::str_replace(muni_join, "regin.polis", "reginopolis"),
+    muni_join = stringr::str_replace(muni_join, "piraju.", "pirajui"),
+    muni_join = stringr::str_replace(muni_join, "ol.mpia", "olimpia"),
+    muni_join = stringr::str_replace(muni_join, "cosm.polis", "cosmopolis"),
+    muni_join = stringr::str_replace(muni_join, "fernand.polis", "fernandopolis"),
+    muni_join = stringr::str_replace(muni_join, "jaguari.na", "jaguariuna"),
+    muni_join = stringr::str_replace(muni_join, "itarar.", "itarare"),
+    muni_join = stringr::str_replace(muni_join, "mairipor.", "mairipora"),
+    muni_join = stringr::str_replace(muni_join, "pen.polis", "penapolis"),
+    muni_join = stringr::str_replace(muni_join, "paragua.u", "paraguacu"),
+    muni_join = stringr::str_replace(muni_join, "c.ndido", "candido"),
+    muni_join = dplyr::case_when(
+      muni_join == "amandaba" ~ "mirandopolis",
+      muni_join == "alto pora" ~ "pedregulho",
+      muni_join == "ana dias" ~ "itariri",
+      muni_join == "jacare" ~ "jacarei",
+      muni_join == "aparecida de sao manuel" ~ "sao manuel",
+      .default = muni_join
+    )
+  ) |>
+  munifacil::incluir_codigo_ibge() |>
+  dplyr::mutate(code_muni = as.numeric(id_municipio)) |>
+  dplyr::group_by(code_muni) |>
+  dplyr::summarise(n = sum(n)) |>
+  dplyr::inner_join(pop_ibge_2022, "code_muni") |>
+  dplyr::mutate(taxa = n / populacao * 100000)
+
+mapa <- geobr::read_municipality("SP", showProgress = FALSE)
+mapa |>
+  dplyr::left_join(aux_cgov_mapa, "code_muni") |>
+  #tidyr::replace_na(list(taxa = 0)) |>
+  dplyr::mutate(tx_cat = cut(
+    taxa, c(0, 1000, 2000, 3000, 5000, 100000),
+    labels = c("[0-1000]", "(1000-2000]", "(2000-3000]", "(3000-5000]", ">5000"),
+    include.lowest = TRUE
+  )) |>
+  ggplot2::ggplot(ggplot2::aes(fill = tx_cat)) +
+  ggplot2::geom_sf(colour = "black", linewidth = .1) +
+  ggplot2::scale_fill_viridis_d(begin = .2, end = .8, na.value = "#dddddd") +
+  ggplot2::theme_void() +
+  ggplot2::labs(fill = "Reclamações /\n100k hab.")
+```
+
+A @fig-regiao-tjsp mostra a taxa de processos por cem mil habitantes em cada comarca de São Paulo. Consideramos apenas comarcas com população maior que 10.000 e mais de 100 processos. É possível notar uma concentração maior no norte e noroeste do estado.
+
+```{r}
+#| label: fig-regiao-tjsp
+#| fig-cap: Taxa de processos por 100 mil habitantes em cada comarcas.
+sf <- abjMaps::d_sf_tjsp$sf$comarca |>
+  sf::st_as_sf()
+
+populacao_comarca <- abjMaps::d_sf_tjsp$sf[[1]] |>
+  tibble::as_tibble() |>
+  dplyr::mutate(code_muni = as.numeric(as.character(cd_geocmu))) |>
+  dplyr::inner_join(pop_ibge_2022, "code_muni") |>
+  dplyr::group_by(comarca) |>
+  dplyr::summarise(populacao = sum(populacao))
+
+da_cjpg |>
+  dplyr::count(comarca) |>
+  dplyr::mutate(
+    comarca = toupper(comarca),
+    comarca = abjutils::rm_accent(comarca),
+    comarca = dplyr::case_when(
+      comarca == "ESTRELA D'OESTE" ~ "ESTRELA DOESTE",
+      comarca == "JUNDIAI / SP" ~ "JUNDIAI",
+      comarca == "MOGI-GUACU" ~ "MOGI GUACU",
+      comarca == "MOGI-MIRIM" ~ "MOGI MIRIM",
+      comarca == "SAO LUIZ DO PARAITINGA" ~ "SAO LUIS DO PARAITINGA",
+      .default = comarca
+    )
+  ) |>
+  dplyr::right_join(sf, "comarca") |>
+  dplyr::inner_join(populacao_comarca, "comarca") |>
+  sf::st_as_sf() |>
+  dplyr::mutate(taxa = n / populacao * 100000) |>
+  dplyr::filter(populacao > 10000, n > 100) |>
+  dplyr::mutate(tx_cat = cut(
+    taxa, c(0, 1000, 2000, 3000, 5000, 100000),
+    labels = c("[0-1000]", "(1000-2000]", "(2000-3000]", "(3000-5000]", ">5000"),
+    include.lowest = TRUE
+  )) |>
+  ggplot2::ggplot(ggplot2::aes(fill = tx_cat)) +
+  ggplot2::geom_sf(colour = "black", linewidth = .2) +
+  ggplot2::scale_fill_viridis_d(begin = .2, end = .8, na.value = "#dddddd") +
+  ggplot2::theme_void() +
+  ggplot2::labs(fill = "Processos /\n100k hab.")
+```
+
+### Quais são os principais assuntos discutidos nas reclamações e processos?
+
+A @tbl-assuntos-cgov mostra os principais assuntos discutidos nas reclamações do CGOV. A maior parte dos casos são relacionados a propaganda/venda enganosa, reembolso/retenção de valores e cobrança indevida.
+
+```{r}
+#| label: tbl-assuntos-cgov
+#| tbl-cap: Assuntos discutidos nas reclamações do CGOV.
+da_cgov_sp |>
+  dplyr::mutate(
+    problema = forcats::fct_infreq(problema),
+    problema = forcats::fct_lump_n(problema, 10, other_level = "Outros")
+  ) |>
+  dplyr::count(problema) |>
+  dplyr::mutate(prop = formattable::percent(n / sum(n))) |>
+  knitr::kable()
+```
+
+A @tbl-assuntos-sindec mostra os principais assuntos discutidos nas reclamações do SINDEC. A maior parte dos casos são relacionados a problemas com cobrança, problemas com contrato e vício/má qualidade do produto ou serviço.
+
+```{r}
+#| label: tbl-assuntos-sindec
+#| tbl-cap: Assuntos discutidos nas reclamações do SINDEC.
+da_sindec_sp |>
+  dplyr::mutate(
+    grupo_problema = enc2utf8(grupo_problema),
+    grupo_problema = stringr::str_replace(grupo_problema, "Cobran.a", "Cobranca"),
+    grupo_problema = stringr::str_replace(grupo_problema, "V.cio", "Vicio"),
+    grupo_problema = stringr::str_replace(grupo_problema, "M. Qual", "Ma Qual"),
+    grupo_problema = stringr::str_replace(grupo_problema, "Servi.o", "Servico"),
+    grupo_problema = forcats::fct_infreq(grupo_problema),
+    grupo_problema = forcats::fct_lump_n(grupo_problema, 10, other_level = "Outros")
+  ) |>
+  dplyr::count(grupo_problema, sort = TRUE) |>
+  dplyr::mutate(prop = formattable::percent(n / sum(n))) |>
+  dplyr::mutate(grupo_problema = abjutils::rm_accent(grupo_problema)) |>
+  knitr::kable()
+```
+
+A @tbl-assuntos-tjsp mostra os principais assuntos discutidos nos processos do TJSP. Infelizmente, a taxonomia dos tipos de casos não é a mesma quando comparada do CGOV. Os processos mais comuns são relacionados a indenização por dano material ou moral, sem especificar os motivos da indenização.
+
+```{r}
+#| label: tbl-assuntos-tjsp
+#| tbl-cap: Assuntos discutidos nos processos do TJSP.
+da_cjpg |>
+  dplyr::mutate(
+    assunto = forcats::fct_infreq(assunto),
+    assunto = forcats::fct_lump_n(assunto, 10, other_level = "Outros")
+  ) |>
+  dplyr::count(assunto) |>
+  dplyr::mutate(prop = formattable::percent(n / sum(n))) |>
+  knitr::kable()
+```
+
+### Houve algum impacto da pandemia na quantidade de reclamações e processos?
+
+A @fig-tempo-cgov mostra a quantidade de reclamações por mês no CGOV. É possível identificar um aumento considerável na quantidade de ações desde o início da pandemia, que passou a reduzir somente a partir do segundo trimestre de 2022.
+
+```{r}
+#| label: fig-tempo-cgov
+#| fig-cap: Quantidade de reclamações por mês no CGOV
+da_cgov_sp |>
+  dplyr::mutate(
+    mes = lubridate::floor_date(data_finalizacao, "month")
+  ) |>
+  dplyr::count(mes) |>
+  ggplot2::ggplot(ggplot2::aes(x = mes, y = n)) +
+  ggplot2::geom_line() +
+  ggplot2::theme_minimal()
+```
+
+A @fig-tempo-cgov-assunto mostra a quantidade de reclamações por mês no CGOV, separando por grupo de problemas. É possível identificar picos de reclamações em diversos tipos de problemas na época da pandemia, especialmente problemas relacionados a cobrança de tarifas, dificuldade de troca, demora no atendmiento e demora na entrega.
+
+```{r}
+#| label: fig-tempo-cgov-assunto
+#| fig-cap: Quantidade de reclamações por mês e grupo de problemas no CGOV.
+#| fig-height: 9
+#| fig-width: 8
+da_cgov_sp |>
+  dplyr::mutate(
+    mes = lubridate::floor_date(data_finalizacao, "month")
+  ) |>
+  dplyr::mutate(
+    problema = forcats::fct_infreq(problema),
+    problema = forcats::fct_lump_n(problema, 11, other_level = "Outros")
+  ) |>
+  dplyr::count(mes, problema) |>
+  dplyr::mutate(
+    problema = stringr::str_wrap(problema, 20)
+  ) |>
+  ggplot2::ggplot(ggplot2::aes(x = mes, y = n)) +
+  ggplot2::geom_line() +
+  ggplot2::facet_wrap(ggplot2::vars(problema), scales = "free_y") +
+  ggplot2::theme_bw()
+```
+
+A @fig-tempo-sindec mostra a quantidade de reclamações por mês no SINDEC. É possível identificar um pico no início da pandemia, que foi estabilizado ao final de 2020 e reduziu drasticamente em meados de 2021, mantendo-se em um patamar mais baixo. A mudança abrupta em 2021 pode indicar que existem inconsistências na base de dados. Por esse motivo, não quebramos a análise por tipo de problema envolvido.
+
+```{r}
+#| label: fig-tempo-sindec
+#| fig-cap: Quantidade de reclamações por mês no SINDEC
+da_sindec_sp |>
+  dplyr::mutate(
+    mes = lubridate::floor_date(data_atendimento, "month")
+  ) |>
+  dplyr::count(mes) |>
+  ggplot2::ggplot(ggplot2::aes(x = mes, y = n)) +
+  ggplot2::geom_line() +
+  ggplot2::theme_minimal()
+```
+
+A @fig-tempo-tjsp mostra o volume de processos ao longo do tempo no TJSP. Descritivamente, é possível notar que a quantidade de processos em 2020 e 2021 sofreu uma leve queda. Importante mencionar o caráter sazonal da série, já que existem meses do ano que sistematicamente apresentam um volume maior ou menor de processos.
+
+```{r}
+#| label: fig-tempo-tjsp
+#| fig-cap: Quantidade de processos por mês no TJSP.
+da_cjpg |>
+  dplyr::mutate(
+    mes = lubridate::floor_date(disponibilizacao, "month")
+  ) |>
+  dplyr::count(mes) |>
+  dplyr::filter(n > 10000) |>
+  ggplot2::ggplot(ggplot2::aes(x = mes, y = n)) +
+  ggplot2::geom_line() +
+  ggplot2::theme_minimal()
+```
+
+A @fig-tempo-tjsp-assunto mostra o volume de processos ao longo do tempo no TJSP, separando por assunto. É possível notar que a quantidade de decisões relacionadas a telefonia e planos de saúde vêm caindo significativamente. Além disso, é possível notar que o volume de decisões relacionadas a transporte aéreo aumentou no período da pandemia, mas os de cancelamento de vôo aumentaram apenas em 2022.
+
+```{r}
+#| label: fig-tempo-tjsp-assunto
+#| fig-cap: Quantidade de processos por mês no TJSP por assunto.
+#| fig-height: 9
+#| fig-width: 8
+
+da_cjpg |>
+  dplyr::mutate(
+    mes = lubridate::floor_date(disponibilizacao, "month")
+  ) |>
+  dplyr::mutate(
+    assunto = forcats::fct_infreq(assunto),
+    assunto = forcats::fct_lump_n(assunto, 11, other_level = "Outros")
+  ) |>
+  dplyr::count(mes, assunto) |>
+  dplyr::mutate(
+    assunto = stringr::str_wrap(assunto, 20)
+  ) |>
+  ggplot2::ggplot(ggplot2::aes(x = mes, y = n)) +
+  ggplot2::geom_line() +
+  ggplot2::facet_wrap(ggplot2::vars(assunto), scales = "free_y") +
+  ggplot2::theme_bw()
+```
+
+### Quais são os maiores litigantes e tipos empresariais mais comuns nas reclamações e processos?
+
+A @tbl-empresas-cgov mostra as 10 empresas mais reclamadas na base do CGOV. As empresas mais reclamadas são as de telefonia, além do Serasa.
+
+```{r}
+#| label: tbl-empresas-cgov
+#| tbl-cap: Empresas mais reclamadas no CGOV.
+da_cgov_sp |>
+  dplyr::mutate(
+    nome_fantasia = forcats::fct_infreq(nome_fantasia),
+    nome_fantasia = forcats::fct_lump_n(nome_fantasia, 10, other_level = "Outros")
+  ) |>
+  dplyr::count(nome_fantasia) |>
+  dplyr::mutate(prop = formattable::percent(n / sum(n))) |>
+  knitr::kable()
+```
+
+A @tbl-segmentos-cgov mostra os segmentos mais reclamados na base do CGOV. Somando todos os casos, os segmentos mais reclamados são bancos e empresas de telefonia, que concentram quase metade das reclamações.
+
+```{r}
+#| label: tbl-segmentos-cgov
+#| tbl-cap: Segmentos mais reclamados no CGOV.
+da_cgov_sp |>
+  dplyr::mutate(
+    segmento_de_mercado = forcats::fct_infreq(segmento_de_mercado),
+    segmento_de_mercado = forcats::fct_lump_n(segmento_de_mercado, 10, other_level = "Outros")
+  ) |>
+  dplyr::count(segmento_de_mercado) |>
+  dplyr::mutate(prop = formattable::percent(n / sum(n))) |>
+  knitr::kable()
+```
+
+
+A @tbl-empresas-sindec mostra as 10 empresas mais reclamadas na base do SINDEC. As empresas mais reclamadas são a ENEL e as empresas de telefonia.
+
+```{r}
+#| label: tbl-empresas-sindec
+#| tbl-cap: Empresas mais reclamadas no SINDEC.
+da_sindec_sp |>
+  dplyr::mutate(
+    nome_fantasia_sindec = abjutils::rm_accent(nome_fantasia_sindec),
+    nome_fantasia_sindec = stringr::str_replace(nome_fantasia_sindec, "F.NICA", "FONICA"),
+    nome_fantasia_sindec = stringr::str_replace(nome_fantasia_sindec, "S.O PAULO", "SAO PAULO"),
+    nome_fantasia_sindec = stringr::str_replace(nome_fantasia_sindec, "DISTRIBUI..O", "DISTRIBUICAO"),
+    nome_fantasia_sindec = forcats::fct_infreq(nome_fantasia_sindec),
+    nome_fantasia_sindec = forcats::fct_lump_n(nome_fantasia_sindec, 10, other_level = "Outros")
+  ) |>
+  dplyr::filter(!nome_fantasia_sindec %in% c("", "NULL")) |>
+  dplyr::count(nome_fantasia_sindec) |>
+  dplyr::mutate(prop = formattable::percent(n / sum(n))) |>
+  knitr::kable()
+```
+
+A @tbl-segmentos-sindec mostra os segmentos mais reclamados na base do SINDEC, usando a Classificação Nacional das Atividades Econômicas (CNAE) como base. Somando todos os casos, os segmentos mais reclamados são bancos e empresas de telefonia, similar ao encontrado na base CGOV.
+
+```{r}
+#| label: tbl-segmentos-sindec
+#| tbl-cap: Segmentos mais reclamados no CGOV.
+da_sindec_sp |>
+  dplyr::mutate(
+    descricao_cnae_principal = abjutils::rm_accent(descricao_cnae_principal),
+    descricao_cnae_principal = stringr::str_replace(descricao_cnae_principal, "M.LTIPLO", "MULTIPLO"),
+    descricao_cnae_principal = stringr::str_replace(descricao_cnae_principal, "M.VEL", "MOVEL"),
+    descricao_cnae_principal = stringr::str_replace(descricao_cnae_principal, "SERVI.O", "SERVICO"),
+    descricao_cnae_principal = stringr::str_replace(descricao_cnae_principal, "EL.TRIC", "ELETRIC"),
+    descricao_cnae_principal = stringr::str_replace(descricao_cnae_principal, "DISTRIBUI..O", "DISTRIBUICAO"),
+    descricao_cnae_principal = forcats::fct_infreq(descricao_cnae_principal),
+    descricao_cnae_principal = forcats::fct_lump_n(descricao_cnae_principal, 10, other_level = "Outros")
+  ) |>
+  dplyr::filter(!descricao_cnae_principal %in% c("", "NULL")) |>
+  dplyr::count(descricao_cnae_principal) |>
+  dplyr::mutate(prop = formattable::percent(n / sum(n))) |>
+  knitr::kable()
+```
+
+No TJSP, infelizmente, os dados de partes não são padronizados nem apresentam a informação do segmento. Fizemos uma padronização básica dos nomes (retirando acentos, colocando em caixa alta e ajustando pontuação), mas uma padronização e segmentação completa das empresas poderá ser objeto de futuras pesquisas. A @tbl-empresas-tjsp mostra a proporção de processos (na amostra de processos consultados) relacionados a cada empresa analisada. A empresa mais reclamada é a Telefonica (Vivo), seguida por grandes bancos, e depois pela Claro.
+
+```{r}
+#| label: tbl-empresas-tjsp
+#| tbl-cap: Quantidade e proporção de empresas no polo passivo no TJSP.
+da_cpopg |>
+  dplyr::select(partes) |>
+  tidyr::unnest(partes) |>
+  dplyr::filter(tipo_parte %in% c("Reqdo", "Reqda")) |>
+  dplyr::mutate(
+    parte = toupper(abjutils::rm_accent(parte)),
+    parte = stringr::str_remove_all(parte, "[^A-Z ]"),
+    parte = stringr::str_squish(parte),
+    parte = forcats::fct_infreq(parte),
+    parte = forcats::fct_lump_n(parte, 10, other_level = "Outros")
+  ) |>
+  dplyr::count(parte, sort = TRUE) |>
+  dplyr::mutate(prop = formattable::percent(n / sum(n))) |>
+  knitr::kable()
+
+```
+
+### Qual é a taxa de resolução de conflitos nas reclamações e processos?
+
+A @tbl-resolucao-cgov mostra a taxa de resolução de reclamações no CGOV. Do total de reclamações, 47% não são avaliadas. Das que foram avaliadas, no entanto, temos que 58% das reclamações são resolvidas.
+
+```{r}
+#| label: tbl-resolucao-cgov
+#| tbl-cap: Taxa de resolução das reclamações no CGOV.
+da_cgov_sp |>
+  dplyr::mutate(avaliacao_reclamacao = toupper(avaliacao_reclamacao)) |>
+  dplyr::count(avaliacao_reclamacao, sort = TRUE) |>
+  dplyr::mutate(prop = formattable::percent(n/sum(n))) |>
+  knitr::kable()
+```
+
+No judiciário, apresentamos as proporções de cada tipo de decisão. Essas informações não estão padronizadas no TJSP; para extrair esse dado, aplicamos palavras-chave às movimentações do processo. Primeiro, identificamos as movimentações que apresentam alguma informação sobre acordo ou procedência da ação. Em seguida, classificamos as movimentações como sendo uma movimentação de transação de acordo ou decião de mérito. Finalmente, classificamos a decisão de cada processo, de acordo com os tipos de movimentação existentes. O resultado é o observado n @tbl-resolucao-tjsp. Primeiro, é interessante notar a taxa de quase 60% de casos que acabam em acordo. Isso significa que mais da metade dos casos, apesar de serem judicializados, acabam em composição amigável, um indicativo de que tais casos poderiam ter evitado a via judicial. Dentro das decisões de mérito, a decisão improcedente é a mais comum, mas a soma das proporções de parcialmente procedente e procedente dá ma proporção maior que a de improcedentes.
+
+```{r}
+#| label: tbl-resolucao-tjsp
+#| tbl-cap: Taxa de resolução das reclamações no TJSP.
+
+rx_decisao <- stringr::regex("acordo|procedente", TRUE)
+rx_improcedente <- stringr::regex("improcedente", TRUE)
+rx_acordo <- stringr::regex("acordo", TRUE)
+rx_parcial <- stringr::regex("parcial|em parte", TRUE)
+rx_procedente <- stringr::regex("procedente", TRUE)
+
+da_cpopg |>
+  dplyr::select(movs) |>
+  tidyr::unnest(movs) |>
+  dplyr::filter(stringr::str_detect(movimentacao, rx_decisao)) |>
+  dplyr::mutate(
+    tipo_mov = dplyr::case_when(
+      stringr::str_detect(movimentacao, rx_acordo) ~ "acordo",
+      stringr::str_detect(movimentacao, rx_improcedente) ~ "improcedente",
+      stringr::str_detect(movimentacao, rx_parcial) ~ "parcial",
+      stringr::str_detect(movimentacao, rx_procedente) ~ "procedente"
+    )
+  ) |>
+  dplyr::group_by(processo) |>
+  dplyr::summarise(
+    decisao = dplyr::case_when(
+      any(tipo_mov == "acordo") ~ "Acordo",
+      any(tipo_mov == "improcedente") ~ "Improcedente",
+      any(tipo_mov == "parcial") ~ "Parcial",
+      any(tipo_mov == "procedente") ~ "Procedente",
+    )
+  ) |>
+  dplyr::count(decisao, sort = TRUE) |>
+  dplyr::mutate(prop = formattable::percent(n/sum(n))) |>
+  knitr::kable()
+```
+
+### Qual é o tempo típico de duração das reclamações e processos?
+
+A @fig-duracao-cgov mostra o tempo de resposta nas reclamações no CGOV. A média de tempo está entre 6 e 7 dias, enquanto a mediana é de 8 dias.
+
+```{r}
+#| label: fig-duracao-cgov
+#| fig-cap: Histograma dos tempos de resposta no CGOV.
+da_cgov_sp |>
+  ggplot2::ggplot() +
+  ggplot2::aes(x = tempo_resposta) +
+  ggplot2::geom_histogram(binwidth = 1) +
+  ggplot2::theme_minimal() +
+  ggplot2::scale_x_continuous(breaks = seq(0, 100, 2), limits = c(0, NA)) +
+  ggplot2::labs(x = "Tempo de resposta (dias)", y = "Classe")
+```
+
+A @fig-duracao-tjsp mostra o tempo dos processos no TJSP separados por classe processual. A média de tempo está entre 10 e 11 meses, enquanto a mediana está entre 5 e 6 meses. Ou seja, o tempo dos processos do TJSP é muito maior do que os tempos de resposta do CGOV.
+
+```{r}
+#| label: fig-duracao-tjsp
+#| fig-cap: Histograma dos tempos dos processos no TJSP, separados por classe processual.
+da_cpopg |>
+  ggplot2::ggplot() +
+  ggplot2::aes(x = tempo) +
+  ggplot2::facet_wrap(ggplot2::vars(classe)) +
+  ggplot2::geom_histogram() +
+  ggplot2::theme_minimal() +
+  ggplot2::scale_x_continuous(breaks = seq(0, 60, 6), limits = c(0, NA)) +
+  ggplot2::coord_cartesian(xlim = c(0, 60)) +
+  ggplot2::labs(x = "Tempo (meses)", y = "Classe")
+```
+
+### Outras análises não relacionadas às questões norteadoras
+
+A @fig-valores-tjsp mostra os valores dos processos no TJSP. É possível notar que grande parte dos casos têm valores menores que 20 salários mínimos, mesmo nos casos de classe procedimento comum cível.
+
+```{r}
+#| label: fig-valores-tjsp
+#| fig-cap: Distribuição dos valores dos processos no TJSP, separando por classe processual.
+da_cpopg |>
+  dplyr::filter(valor < 1e6) |>
+  ggplot2::ggplot() +
+  ggplot2::aes(x = valor / 1550, y = classe) +
+  ggridges::geom_density_ridges(fill = "gray90") +
+  ggplot2::geom_vline(xintercept = c(20, 40), linetype = 2) +
+  ggplot2::theme_minimal() +
+  ggplot2::coord_cartesian(xlim = c(0, 200000 / 1550)) +
+  ggplot2::labs(x = "Valor (em salários mínimos)") +
+  ggridges::theme_ridges()
+```
+
+## Discussão
+
+*com você!*
+
+# Conclusão
+
+*com você!*

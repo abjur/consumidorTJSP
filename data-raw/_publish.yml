@@ -1,0 +1,4 @@
+- source: relatorio.qmd
+  quarto-pub:
+    - id: b6032a71-62fc-4d1f-9691-9935b849c9e9
+      url: 'https://jtrecenti.quarto.pub/tcc-igor'
