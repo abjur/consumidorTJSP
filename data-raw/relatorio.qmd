@@ -1,9 +1,9 @@
 ---
-title: "TCC Igor"
+title: "Relatório"
 format:
   html: default
   docx:
-    reference-doc: "/home/jt/Documents/abj/obsArb/inst/relatorio/template.docx"
+    reference-doc: "template.docx"
 engine: knitr
 knitr:
   opts_chunk:
@@ -15,11 +15,11 @@ knitr:
 
 ## Introdução
 
-*é com você!*
+TODO
 
 ### Referencial teórico
 
-*sugestão: utilizar uma parte da proposta de projeto do obs consumidor*
+TODO
 
 ### Objetivos
 
@@ -691,8 +691,8 @@ da_cpopg |>
 
 ## Discussão
 
-*com você!*
+TODO
 
 # Conclusão
 
-*com você!*
+TODO

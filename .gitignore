@@ -14,3 +14,4 @@ data-raw/aux_sindec_sp.rds
 .httr-oauth
 .DS_Store
 .quarto
+README.html
